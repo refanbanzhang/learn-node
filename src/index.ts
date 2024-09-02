@@ -1,6 +1,8 @@
 import express from 'express';
 import path from 'path';
 
+import initUpload from './upload';
+
 const app = express();
 const port = 3000;
 
@@ -9,6 +11,8 @@ app.use(express.json());
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+initUpload(app)
 
 interface UserInfo {
     id: string;
