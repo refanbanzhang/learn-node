@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es6",                 // 编译到 ES6
+    "module": "commonjs",            // 使用 commonjs 模块系统
+    "outDir": "build",               // 指定输出目录为 build
+    "rootDir": "src",                // 指定源文件目录为 src
+    "strict": true,                  // 启用所有严格类型检查选项
+    "esModuleInterop": true,         // 允许默认导入非ES模块
+    "skipLibCheck": true,            // 跳过库文件的类型检查
+    "forceConsistentCasingInFileNames": true // 强制文件名大小写一致
+  },
+  "include": [
+    "src/**/*" // 包括 src 目录下的所有文件
+  ],
+  "exclude": [
+    "node_modules", // 排除 node_modules 目录
+    "**/*.spec.ts"  // 排除测试文件
+  ]
+}
