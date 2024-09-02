@@ -1,60 +1,28 @@
+require('dotenv').config();
+
 import express from 'express';
 import path from 'path';
-
-import initUpload from './upload';
+import userRouter from './user'; // 引入用户路由
+import authRouter from './auth';
+import uploadRouter from './upload';
+import authenticateToken from './authenticate';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 3000;
 
-// Middleware to parse JSON bodies
 app.use(express.json());
-
-// Serve static files from the 'public' directory
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 
-initUpload(app)
-
-interface UserInfo {
-    id: string;
-    name: string;
-    email: string;
-    password: string; // Assuming password is also stored for login purposes
-}
-
-// Mock database of users
-const users: UserInfo[] = [
-    { id: '1', name: '张三', email: 'zhangsan@example.com', password: 'password123' },
-    { id: '2', name: '李四', email: 'lisi@example.com', password: 'password456' }
-];
-
-// GET endpoint to fetch user information by ID
-app.get('/user/:id', (req, res) => {
-    const { id } = req.params;
-    const user = users.find(user => user.id === id);
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(404).send('User not found');
-    }
-});
-
-// POST endpoint for user login
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const user = users.find(user => user.email === email && user.password === password);
-    if (user) {
-        res.json({ message: 'Login successful', userId: user.id });
-    } else {
-        res.status(401).send('Invalid credentials');
-    }
-});
-
-// GET endpoint for the root route
 app.get('/', (req, res) => {
-    res.send('Welcome to the Home Page');
+    res.send('Welcome to the Home Page. <a href="/auth/login">Login</a>');
 });
+app.use('/auth', authRouter);
+app.use('/user', authenticateToken, userRouter);
+app.use('/upload', uploadRouter);
 
-// Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
